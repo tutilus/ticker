@@ -18,7 +18,7 @@ func transformResponseQuote(responseQuote ResponseQuote) c.AssetQuote {
 	isVariablePrecision := (assetClass == c.AssetClassCryptocurrency)
 
 	assetQuote := c.AssetQuote{
-		Id:     responseQuote.Symbol,
+		Id:     responseQuote.Id,
 		Name:   responseQuote.ShortName,
 		Symbol: responseQuote.Symbol,
 		Class:  assetClass,

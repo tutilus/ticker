@@ -36,6 +36,7 @@ type Options struct {
 type symbolSource struct {
 	symbol string
 	source c.QuoteSource
+	id     string // fix #245 : Keep id as reference to Yaml config
 }
 
 // Run starts the ticker UI
@@ -383,12 +384,14 @@ func getSymbolAndSource(symbol string, tickerSymbolToSourceSymbol symbol.TickerS
 		// Futures contracts on Coinbase Derivatives Exchange are implicitly USD-denominated
 		if strings.HasSuffix(symbol, "-CDE") {
 			return symbolSource{
+				id:     symbolUppercase,
 				source: c.QuoteSourceCoinbase,
 				symbol: symbol,
 			}
 		}
 
 		return symbolSource{
+			id:     symbolUppercase,
 			source: c.QuoteSourceCoinbase,
 			symbol: symbol + "-USD",
 		}
@@ -399,6 +402,7 @@ func getSymbolAndSource(symbol string, tickerSymbolToSourceSymbol symbol.TickerS
 		if tickerSymbolToSource, exists := tickerSymbolToSourceSymbol[symbolUppercase]; exists {
 
 			return symbolSource{
+				id:     symbolUppercase,
 				source: tickerSymbolToSource.Source,
 				symbol: tickerSymbolToSource.SourceSymbol,
 			}
@@ -408,6 +412,7 @@ func getSymbolAndSource(symbol string, tickerSymbolToSourceSymbol symbol.TickerS
 	}
 
 	return symbolSource{
+		id:     symbolUppercase,
 		source: c.QuoteSourceYahoo,
 		symbol: symbolUppercase,
 	}
@@ -416,18 +421,26 @@ func getSymbolAndSource(symbol string, tickerSymbolToSourceSymbol symbol.TickerS
 
 func appendSymbol(symbolsUnique map[c.QuoteSource]c.AssetGroupSymbolsBySource, symbolAndSource symbolSource) map[c.QuoteSource]c.AssetGroupSymbolsBySource {
 
+	newSymbol := c.Symbol{
+		Id:   symbolAndSource.id,
+		Name: symbolAndSource.symbol,
+	}
+
 	if symbolsBySource, ok := symbolsUnique[symbolAndSource.source]; ok {
 
-		symbolsBySource.Symbols = append(symbolsBySource.Symbols, symbolAndSource.symbol)
+		symbolsBySource.Symbols = append(symbolsBySource.Symbols, newSymbol)
 
 		symbolsUnique[symbolAndSource.source] = symbolsBySource
 
 		return symbolsUnique
 	}
 
+	newSymbols := make([]c.Symbol, 0)
+	newSymbols = append(newSymbols, newSymbol)
+
 	symbolsUnique[symbolAndSource.source] = c.AssetGroupSymbolsBySource{
 		Source:  symbolAndSource.source,
-		Symbols: []string{symbolAndSource.symbol},
+		Symbols: newSymbols,
 	}
 
 	return symbolsUnique

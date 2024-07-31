@@ -57,7 +57,7 @@ type AssetGroup struct {
 }
 
 type AssetGroupSymbolsBySource struct {
-	Symbols []string
+	Symbols []Symbol
 	Source  QuoteSource
 }
 
@@ -268,4 +268,10 @@ type MessageRequest[T any] struct {
 	Data          T
 	ID            string
 	VersionVector int
+}
+
+// Symbol represents a symbol but keep id not only name
+type Symbol struct {
+	Id   string
+	Name string
 }
