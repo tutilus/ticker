@@ -38,6 +38,7 @@ var _ = Describe("Print", func() {
 		inputDependencies c.Dependencies
 	)
 
+<<<<<<< HEAD
 	BeforeEach(func() {
 		server = ghttp.NewServer()
 
@@ -88,6 +89,27 @@ var _ = Describe("Print", func() {
 							Symbols: []string{
 								"GOOG",
 								"RBLX",
+=======
+	Describe("Run", func() {
+		var (
+			inputOptions = print.Options{}
+			inputContext = c.Context{
+				Groups: []c.AssetGroup{
+					{
+						SymbolsBySource: []c.AssetGroupSymbolsBySource{
+							{
+								Source: c.QuoteSourceYahoo,
+								Symbols: []c.Symbol{
+									{
+										Id:   "GOOG",
+										Name: "GOOG",
+									},
+									{
+										Id:   "RBLX",
+										Name: "RBLX",
+									},
+								},
+>>>>>>> 7400681 (Update test)
 							},
 						},
 					},
