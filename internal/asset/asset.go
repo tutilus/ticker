@@ -132,7 +132,8 @@ func updatePositionWeights(assets []c.Asset, positionSummary PositionSummary) []
 
 func getPositionFromAssetQuote(assetQuote c.AssetQuote, lotsBySymbol map[string]AggregatedLot, currencyRateByUse currencyRateByUse) c.Position {
 
-	if aggregatedLot, ok := lotsBySymbol[assetQuote.Symbol]; ok {
+	// fix #240: Use Asset Id in place of Symbol as unique id
+	if aggregatedLot, ok := lotsBySymbol[assetQuote.Id]; ok {
 		// For futures contracts, multiply price by contract size for PnL calculations
 		// The displayed price remains unchanged (uses QuotePrice.Price directly)
 		priceForPosition := assetQuote.QuotePrice.Price
